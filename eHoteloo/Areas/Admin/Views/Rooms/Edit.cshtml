@@ -1,0 +1,77 @@
+﻿@model eHoteloo.VM.EditRoomVM
+@{
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Edit Room";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" style="color:var(--color-text-muted);">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <h1>Edit Room</h1>
+    </div>
+</div>
+
+<div style="max-width:600px;background:var(--color-white);border-radius:var(--radius);border:1px solid var(--color-border);padding:28px;">
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+
+        <input type="hidden" name="id" value="@Context.Request.RouteValues["id"]" />
+
+        <div asp-validation-summary="ModelOnly" style="color:#b91c1c;font-size:0.85rem;margin-bottom:16px;"></div>
+
+        <!-- Room Number -->
+        <div style="margin-bottom:20px;">
+            <label asp-for="RoomNumber"></label>
+            <input asp-for="RoomNumber" />
+            <span asp-validation-for="RoomNumber"></span>
+        </div>
+
+        <!-- Room Type -->
+        <div style="margin-bottom:20px;">
+            <label asp-for="RoomType"></label>
+            <select asp-for="RoomType">
+                <option value="0">Single</option>
+                <option value="1">Double</option>
+                <option value="2">Suite</option>
+            </select>
+        </div>
+
+        <!-- Description -->
+        <div style="margin-bottom:20px;">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description"></textarea>
+        </div>
+
+        <!-- Price -->
+        <div style="margin-bottom:20px;">
+            <label asp-for="PricePerDay"></label>
+            <input asp-for="PricePerDay" type="number" step="0.01" />
+        </div>
+
+        <!-- Is Active -->
+        <div style="margin-bottom:20px;">
+            <input asp-for="IsActive" type="checkbox" />
+            <label asp-for="IsActive">Is Active</label>
+        </div>
+
+        <!-- Images Upload -->
+        <div style="margin-bottom:20px;">
+            <label>Upload New Images</label>
+            <input type="file" name="Images" multiple />
+        </div>
+
+        <!-- Buttons -->
+        <div style="display:flex;gap:12px;">
+            <button type="submit">Save Changes</button>
+            <a asp-action="Index">Cancel</a>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

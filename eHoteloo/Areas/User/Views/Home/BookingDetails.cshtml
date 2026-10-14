@@ -1,0 +1,149 @@
+﻿@using eHoteloo.Models
+@{
+    Layout = "/Views/Shared/_UserLayout.cshtml";
+    ViewData["Title"] = $"Booking #{Model.BookingNumber}";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model eHoteloo.Models.Booking
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3><i class="bi bi-receipt me-2"></i>Booking Details</h3>
+        <a asp-action="BookingHistory" class="btn btn-outline-secondary btn-sm rounded-3">
+            <i class="bi bi-arrow-left me-1"></i>Back to History
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold">#@Model.BookingNumber</h5>
+                        <span class="badge bg-@(Model.Status switch {
+                            BookingStatus.Pending => "warning text-dark",
+                            BookingStatus.Confirmed => "info",
+                            BookingStatus.CheckedIn => "success",
+                            BookingStatus.CheckedOut => "secondary",
+                            BookingStatus.Cancelled => "danger",
+                            _ => "light"
+                        }) fs-6 px-3 py-2">
+                            @Model.Status
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="text-muted small text-uppercase fw-bold">Room</label>
+                            <p class="mb-0 fs-5">@(Model.Room?.RoomNumber) <span class="text-muted fs-6">(@Model.Room?.RoomType)</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small text-uppercase fw-bold">Total Price</label>
+                            <p class="mb-0 fs-5 text-primary fw-bold">$@Model.BookingPrice.ToString("N2")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small text-uppercase fw-bold">Check In</label>
+                            <p class="mb-0"><i class="bi bi-calendar-check me-2 text-success"></i>@Model.CheckIn.ToString("dddd, dd MMM yyyy")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small text-uppercase fw-bold">Check Out</label>
+                            <p class="mb-0"><i class="bi bi-calendar-x me-2 text-danger"></i>@Model.CheckOut.ToString("dddd, dd MMM yyyy")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small text-uppercase fw-bold">Duration</label>
+                            <p class="mb-0"><i class="bi bi-moon-stars me-2"></i>@Model.Days Night(s)</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small text-uppercase fw-bold">Booked On</label>
+                            <p class="mb-0"><i class="bi bi-clock-history me-2"></i>@Model.CreatedAt.ToString("dd MMM yyyy HH:mm")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.Services?.Any() == true)
+            {
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-cone-striped me-2"></i>Services</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Service</th>
+                                        <th>Status</th>
+                                        <th class="text-end">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var service in Model.Services)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="fw-semibold">@service.Title</div>
+                                                <small class="text-muted">@service.Description</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-@(service.Status switch {
+                                                    ServiceStatus.Pending => "warning text-dark",
+                                                    ServiceStatus.InProgress => "info",
+                                                    ServiceStatus.Completed => "success",
+                                                    ServiceStatus.Cancelled => "danger",
+                                                    _ => "light"
+                                                })">
+                                                    @service.Status
+                                                </span>
+                                            </td>
+                                            <td class="text-end fw-bold">$@service.Price.ToString("N2")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-images me-2"></i>Room Gallery</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Room?.Images?.Any() == true)
+                    {
+                        <div class="row g-2">
+                            @foreach (var img in Model.Room.Images)
+                            {
+                                <div class="col-6">
+                                    <img src="@img.ImagePath" class="img-fluid rounded-3" style="height:100px;object-fit:cover;width:100%;" />
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-image display-4"></i>
+                            <p class="mt-2">No images available</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 rounded-4 bg-primary text-white">
+                <div class="card-body p-4 text-center">
+                    <h6 class="text-uppercase opacity-75 mb-2">Need Help?</h6>
+                    <p class="small opacity-75 mb-3">Contact our support team for any inquiries about your booking.</p>
+                    <a href="#" class="btn btn-light btn-sm rounded-3 w-100">
+                        <i class="bi bi-headset me-2"></i>Contact Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

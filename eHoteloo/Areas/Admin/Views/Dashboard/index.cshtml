@@ -1,0 +1,117 @@
+﻿@using eHoteloo.Models
+@model eHoteloo.Areas.Admin.Controllers.DashboardViewModel
+@{
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="page-header">
+    <h1>Dashboard</h1>
+    <span class="page-date">@DateTime.Now.ToString("dddd, dd MMM yyyy")</span>
+</div>
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+
+    <div class="stat-card blue">
+        <div class="stat-info">
+            <p class="stat-label">Total Rooms</p>
+            <h3 class="stat-value">@Model.TotalRooms</h3>
+            <p class="stat-sub green">@Model.ActiveRooms Active</p>
+        </div>
+        <div class="stat-icon blue">
+            <span class="material-symbols-outlined">bed</span>
+        </div>
+    </div>
+
+    <div class="stat-card green">
+        <div class="stat-info">
+            <p class="stat-label">Total Bookings</p>
+            <h3 class="stat-value">@Model.TotalBookings</h3>
+            <p class="stat-sub orange">@Model.PendingBookings Pending</p>
+        </div>
+        <div class="stat-icon green">
+            <span class="material-symbols-outlined">book_online</span>
+        </div>
+    </div>
+
+    <div class="stat-card purple">
+        <div class="stat-info">
+            <p class="stat-label">Total Payments</p>
+            <h3 class="stat-value">@Model.TotalPayments</h3>
+            <p class="stat-sub muted">Revenue: $@Model.TotalRevenue</p>
+        </div>
+        <div class="stat-icon purple">
+            <span class="material-symbols-outlined">payments</span>
+        </div>
+    </div>
+
+    <div class="stat-card orange">
+        <div class="stat-info">
+            <p class="stat-label">Total Users</p>
+            <h3 class="stat-value">@Model.TotalUsers</h3>
+            <p class="stat-sub muted">Registered Customers</p>
+        </div>
+        <div class="stat-icon orange">
+            <span class="material-symbols-outlined">group</span>
+        </div>
+    </div>
+
+</div>
+
+<!-- Recent Bookings -->
+<div class="table-card">
+    <div class="table-card-header">
+        <h3>Recent Bookings</h3>
+        <a asp-action="Index" asp-controller="Bookings" asp-area="Admin" class="view-all-link">View All →</a>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Booking #</th>
+                    <th>Guest</th>
+                    <th>Room</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.RecentBookings != null && Model.RecentBookings.Any())
+                {
+                    @foreach (var booking in Model.RecentBookings)
+                    {
+                        <tr>
+                            <td class="td-mono">@booking.BookingNumber</td>
+                            <td>@booking.User?.Email</td>
+                            <td>@booking.Room?.RoomNumber</td>
+                            <td class="td-muted">@booking.CheckIn.ToString("dd MMM yyyy")</td>
+                            <td class="td-muted">@booking.CheckOut.ToString("dd MMM yyyy")</td>
+                            <td>
+                                <span class="badge
+                                            @(booking.Status == BookingStatus.Confirmed ? "badge-green" :
+                                                                            booking.Status == BookingStatus.Pending ? "badge-yellow" :
+                                                                            booking.Status == BookingStatus.Cancelled ? "badge-red" :
+                                                                            "badge-gray")">
+                            @booking.Status
+                        </span>
+                    </td>
+                </tr>
+                                }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <span class="material-symbols-outlined">event_busy</span>
+                                <p>No recent bookings found</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

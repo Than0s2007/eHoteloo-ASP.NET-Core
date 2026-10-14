@@ -1,0 +1,37 @@
+﻿@model eHoteloo.Models.Room
+@{
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Delete Room";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+<div style="max-width:480px;margin:60px auto;text-align:center;">
+    <div style="background:var(--color-white);border-radius:var(--radius);border:1px solid var(--color-border);padding:40px 32px;">
+        <div style="width:64px;height:64px;background:#fee2e2;color:#dc2626;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+            <span class="material-symbols-outlined" style="font-size:32px;">warning</span>
+        </div>
+
+        <h2 style="font-size:1.4rem;font-weight:700;margin-bottom:8px;color:var(--color-text-main);">Delete Room</h2>
+        <p style="color:var(--color-text-muted);font-size:0.9rem;margin-bottom:24px;">
+            Are you sure you want to delete room <strong>@Model.RoomNumber</strong>?<br />This action cannot be undone.
+        </p>
+
+        <div style="background:#f8fafc;border-radius:var(--radius-sm);padding:16px;margin-bottom:28px;text-align:left;font-size:0.88rem;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                <span class="td-muted">Type</span>
+                <span style="font-weight:600;">@Model.RoomType</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+                <span class="td-muted">Price</span>
+                <span style="font-weight:600;">$@Model.PricePerDay</span>
+            </div>
+        </div>
+
+        <form asp-action="Delete" method="post" style="display:flex;gap:12px;justify-content:center;">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" style="padding:10px 28px;background:#dc2626;color:#fff;border:none;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;font-size:0.9rem;">Delete</button>
+            <a asp-action="Index" style="padding:10px 28px;border:1px solid var(--color-border);color:var(--color-text-muted);border-radius:var(--radius-sm);font-weight:600;font-size:0.9rem;">Cancel</a>
+        </form>
+    </div>
+</div>

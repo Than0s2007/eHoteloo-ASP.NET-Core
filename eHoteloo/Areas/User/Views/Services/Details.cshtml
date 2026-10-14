@@ -1,0 +1,77 @@
+﻿@using eHoteloo.Areas.User.ViewModels
+@model ServiceDetailsViewModel
+@{
+    ViewData["Title"] = "Service Details";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Service Details</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">@Model.Title</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Booking Number</dt>
+                        <dd class="col-sm-8"><span class="badge bg-secondary">@Model.BookingNumber</span></dd>
+
+                        <dt class="col-sm-4">Room</dt>
+                        <dd class="col-sm-8">@Model.RoomNumber</dd>
+
+                        <dt class="col-sm-4">Request Date</dt>
+                        <dd class="col-sm-8">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+
+                        <dt class="col-sm-4">Status</dt>
+                        <dd class="col-sm-8">
+                            @switch (Model.Status)
+                            {
+                                case ServiceStatus.Pending:
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    break;
+                                case ServiceStatus.InProgress:
+                                    <span class="badge bg-info text-dark">In Progress</span>
+                                    break;
+                                case ServiceStatus.Completed:
+                                    <span class="badge bg-success">Completed</span>
+                                    break;
+                                case ServiceStatus.Cancelled:
+                                    <span class="badge bg-danger">Cancelled</span>
+                                    break;
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4">Price</dt>
+                        <dd class="col-sm-8">@Model.Price.ToString("C")</dd>
+
+                        <dt class="col-sm-4">Payment Status</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.PaymentStatus == "Not Paid")
+                            {
+                                <span class="badge bg-secondary">Not Paid</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">@Model.PaymentStatus</span>
+                            }
+                        </dd>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Description))
+                        {
+                            <dt class="col-sm-4">Description / Notes</dt>
+                            <dd class="col-sm-8">@Model.Description</dd>
+                        }
+                    </dl>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-area="User" asp-controller="Services" asp-action="Index" class="btn btn-outline-secondary">
+                            Back to My Services
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

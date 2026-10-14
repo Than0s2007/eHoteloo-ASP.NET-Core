@@ -1,0 +1,81 @@
+﻿@using eHoteloo.Models
+@model eHoteloo.Models.Booking
+@{
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Booking Details";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" style="color:var(--color-text-muted);">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <h1>Booking @Model.BookingNumber</h1>
+    </div>
+</div>
+
+<div style="max-width:720px;background:var(--color-white);border-radius:var(--radius);border:1px solid var(--color-border);padding:28px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;font-size:0.9rem;margin-bottom:24px;">
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Guest</div>
+            <div style="font-weight:700;">@Model.User?.FirstName @Model.User?.LastName</div>
+            <div style="font-size:0.82rem;color:var(--color-text-muted);">@Model.User?.Email</div>
+        </div>
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Room</div>
+            <div style="font-weight:700;">@Model.Room?.RoomNumber <span style="font-weight:400;color:var(--color-text-muted);">(@Model.Room?.RoomType)</span></div>
+        </div>
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Check In</div>
+            <div style="font-weight:600;">@Model.CheckIn.ToString("dd MMM yyyy")</div>
+        </div>
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Check Out</div>
+            <div style="font-weight:600;">@Model.CheckOut.ToString("dd MMM yyyy")</div>
+        </div>
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Duration</div>
+            <div style="font-weight:600;">@Model.Days Days</div>
+        </div>
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Total Price</div>
+            <div style="font-weight:800;color:#15803d;font-size:1.1rem;">$@Model.BookingPrice</div>
+        </div>
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Status</div>
+            @{
+                var badgeClass = Model.Status switch
+                {
+                    BookingStatus.Confirmed => "badge-green",
+                    BookingStatus.Pending => "badge-yellow",
+                    BookingStatus.Cancelled => "badge-red",
+                    BookingStatus.CheckedIn => "badge-green",
+                    BookingStatus.CheckedOut => "badge-gray",
+                    _ => "badge-gray"
+                };
+            }
+            <span class="badge @badgeClass">@Model.Status</span>
+        </div>
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Payments</div>
+            <div style="font-weight:600;">@Model.Payments?.Count() payment(s)</div>
+        </div>
+    </div>
+
+    @if (Model.Services?.Any() == true)
+    {
+        <div style="border-top:1px solid var(--color-border);padding-top:20px;">
+            <h3 style="font-size:1rem;font-weight:700;margin-bottom:14px;">Services</h3>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                @foreach (var service in Model.Services)
+                {
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f8fafc;border-radius:var(--radius-sm);">
+                        <span style="font-weight:500;">@service.Title</span>
+                        <span style="font-weight:700;color:var(--color-text-main);">$@service.Price</span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

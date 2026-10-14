@@ -1,0 +1,89 @@
+﻿@model RoomCreateVM
+@{
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Create Room";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" style="color:var(--color-text-muted);">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <h1>Create New Room</h1>
+    </div>
+</div>
+
+<div style="max-width:600px;background:var(--color-white);border-radius:var(--radius);border:1px solid var(--color-border);padding:28px;">
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+        <div asp-validation-summary="ModelOnly" style="color:#b91c1c;font-size:0.85rem;margin-bottom:16px;"></div>
+
+        <!-- Room Number -->
+        <div style="margin-bottom:20px;">
+            <label asp-for="RoomNumber" style="display:block;font-size:0.82rem;font-weight:600;color:var(--color-text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;"></label>
+            <input asp-for="RoomNumber" style="width:100%;padding:10px 14px;border:1px solid var(--color-border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.95rem;" />
+            <span asp-validation-for="RoomNumber" style="color:#ef4444;font-size:0.78rem;"></span>
+        </div>
+
+        <!-- Room Type -->
+        <div style="margin-bottom:20px;">
+            <label asp-for="RoomType" style="display:block;font-size:0.82rem;font-weight:600;color:var(--color-text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;"></label>
+            <select asp-for="RoomType" style="width:100%;padding:10px 14px;border:1px solid var(--color-border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.95rem;background:#fff;">
+                <option value="0">Single</option>
+                <option value="1">Double</option>
+                <option value="2">Suite</option>
+            </select>
+        </div>
+
+        <!-- Description -->
+        <div style="margin-bottom:20px;">
+            <label asp-for="Description" style="display:block;font-size:0.82rem;font-weight:600;color:var(--color-text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;"></label>
+            <textarea asp-for="Description" rows="3" style="width:100%;padding:10px 14px;border:1px solid var(--color-border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.95rem;resize:vertical;"></textarea>
+        </div>
+
+        <!-- Price -->
+        <div style="margin-bottom:20px;">
+            <label asp-for="PricePerDay" style="display:block;font-size:0.82rem;font-weight:600;color:var(--color-text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;"></label>
+            <input asp-for="PricePerDay" type="number" step="0.01" style="width:100%;padding:10px 14px;border:1px solid var(--color-border);border-radius:var(--radius-sm);font-family:inherit;font-size:0.95rem;" />
+            <span asp-validation-for="PricePerDay" style="color:#ef4444;font-size:0.78rem;"></span>
+        </div>
+
+        <!-- Is Active -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
+            <input asp-for="IsActive" type="checkbox" style="width:18px;height:18px;accent-color:var(--color-primary);" />
+            <label asp-for="IsActive" style="font-size:0.9rem;color:var(--color-text-main);font-weight:500;">Is Active</label>
+        </div>
+
+        <!-- Images Upload -->
+        <div style="margin-bottom:20px;">
+            <label style="display:block;font-size:0.82rem;font-weight:600;color:var(--color-text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">
+                Room Images
+            </label>
+
+            <input type="file" name="Images" multiple
+                   style="width:100%;padding:10px;border:1px solid var(--color-border);border-radius:var(--radius-sm);background:#fff;" />
+
+            <small style="color:var(--color-text-muted);font-size:0.75rem;">
+                You can select multiple images
+            </small>
+        </div>
+
+        <!-- Buttons -->
+        <div style="display:flex;gap:12px;">
+            <button type="submit" style="padding:10px 24px;background:var(--color-primary);color:#fff;border:none;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;font-size:0.9rem;">
+                Create
+            </button>
+
+            <a asp-action="Index" style="padding:10px 24px;border:1px solid var(--color-border);color:var(--color-text-muted);border-radius:var(--radius-sm);font-weight:600;font-size:0.9rem;">
+                Cancel
+            </a>
+        </div>
+
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

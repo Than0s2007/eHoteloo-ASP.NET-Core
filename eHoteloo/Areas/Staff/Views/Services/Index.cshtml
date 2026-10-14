@@ -1,0 +1,99 @@
+﻿@model IEnumerable<ServiceRequestViewModel>
+@{
+    ViewData["Title"] = "Service Requests";
+}
+
+<div class="container-fluid mt-4">
+    <h2 class="mb-4">Service Requests</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Booking No.</th>
+                            <th>Room</th>
+                            <th>Guest Name</th>
+                            <th>Phone</th>
+                            <th>Service</th>
+                            <th>Request Date</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="10" class="text-center text-muted py-4">No service requests found.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            int counter = 1;
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@counter</td>
+                                    <td><span class="badge bg-secondary">@item.BookingNumber</span></td>
+                                    <td>@item.RoomNumber</td>
+                                    <td><strong>@item.GuestName</strong></td>
+                                    <td>@item.GuestPhone</td>
+                                    <td>@item.ServiceName</td>
+                                    <td>@item.RequestDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                    <td>
+                                        @switch (item.CurrentStatus)
+                                        {
+                                            case ServiceStatus.Pending:
+                                                <span class="badge bg-warning text-dark">Pending</span>
+                                                break;
+                                            case ServiceStatus.InProgress:
+                                                <span class="badge bg-info text-dark">In Progress</span>
+                                                break;
+                                            case ServiceStatus.Completed:
+                                                <span class="badge bg-success">Completed</span>
+                                                break;
+                                            case ServiceStatus.Cancelled:
+                                                <span class="badge bg-danger">Cancelled</span>
+                                                break;
+                                            default:
+                                                <span class="badge bg-secondary">@item.CurrentStatus</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(item.Notes) && item.Notes != "-")
+                                        {
+                                            <span class="text-truncate d-inline-block" style="max-width: 150px;" title="@item.Notes">@item.Notes</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-area="Staff" asp-controller="Services" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">
+                                            Manage
+                                        </a>
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

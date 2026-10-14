@@ -1,0 +1,100 @@
+﻿@{
+    Layout = "/Views/Shared/_UserLayout.cshtml";
+    ViewData["Title"] = "Edit Profile";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model dynamic
+
+@{
+    var firstName = Model?.FirstName ?? "";
+    var lastName = Model?.LastName ?? "";
+    var photoName = Model?.IdentityPhotoName ?? "";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-white py-4 border-bottom">
+                    <h4 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-2"></i>Edit Profile</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="All" class="alert alert-danger" style="display:none;"></div>
+
+                        <div class="text-center mb-4">
+                            @if (!string.IsNullOrEmpty(photoName))
+                            {
+                                <img src="~/images/IdentityImage/@photoName"
+                                     class="rounded-circle shadow mb-3"
+                                     style="width:150px;height:150px;object-fit:cover;"
+                                     id="previewImage" />
+                            }
+                            else
+                            {
+                                <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center text-white mb-3 shadow"
+                                     style="width:150px;height:150px;font-size:64px;" id="previewPlaceholder">
+                                    @(firstName?[0])
+                                </div>
+                                <img src="" class="rounded-circle shadow mb-3 d-none"
+                                     style="width:150px;height:150px;object-fit:cover;"
+                                     id="previewImage" />
+                            }
+                            <div>
+                                <label for="IdentityPhoto" class="btn btn-outline-primary btn-sm rounded-3">
+                                    <i class="bi bi-camera me-1"></i>Change Photo
+                                </label>
+                                <input type="file" name="IdentityPhoto" id="IdentityPhoto"
+                                       class="d-none" accept="image/*" onchange="previewFile()" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">First Name</label>
+                            <input type="text" name="FirstName" class="form-control form-control-lg rounded-3"
+                                   value="@firstName" required maxlength="100" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Last Name</label>
+                            <input type="text" name="LastName" class="form-control form-control-lg rounded-3"
+                                   value="@lastName" required maxlength="100" />
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-3">
+                                <i class="bi bi-check-lg me-2"></i>Save Changes
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary rounded-3">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function previewFile() {
+            const preview = document.getElementById('previewImage');
+            const placeholder = document.getElementById('previewPlaceholder');
+            const file = document.getElementById('IdentityPhoto').files[0];
+            const reader = new FileReader();
+
+            reader.addEventListener("load", function () {
+                preview.src = reader.result;
+                preview.classList.remove('d-none');
+                if (placeholder) placeholder.classList.add('d-none');
+            }, false);
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+}

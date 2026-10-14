@@ -1,0 +1,99 @@
+﻿@using eHoteloo.Areas.Admin.Models
+@using eHoteloo.Models
+@model AdminUserViewModel
+@{
+    ViewData["Title"] = "User Details";
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" style="color:var(--color-text-muted);">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <h1>User Details</h1>
+    </div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" style="padding:10px 20px;background:#f59e0b;color:#fff;border-radius:var(--radius-sm);font-weight:600;font-size:0.85rem;">
+        Edit User
+    </a>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <!-- User Info -->
+    <div class="table-card" style="padding:24px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+            <div style="width:56px;height:56px;background:var(--color-primary-light);color:var(--color-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;">
+                @Model.FirstName[0]@Model.LastName[0]
+            </div>
+            <div>
+                <h2 style="font-size:1.1rem;font-weight:700;color:var(--color-text-main);">@Model.FirstName @Model.LastName</h2>
+                <p style="color:var(--color-text-muted);font-size:0.85rem;">@Model.Email</p>
+            </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px;font-size:0.9rem;">
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--color-border);padding-bottom:10px;">
+                <span class="td-muted">Phone</span>
+                <span style="font-weight:600;">@(Model.PhoneNumber ?? "Not set")</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--color-border);padding-bottom:10px;">
+                <span class="td-muted">Role</span>
+                <span style="font-weight:600;">@Model.Role</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--color-border);padding-bottom:10px;">
+                <span class="td-muted">Balance</span>
+                <span style="font-weight:700;color:#15803d;">$@Model.Balance</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--color-border);padding-bottom:10px;">
+                <span class="td-muted">Active</span>
+                <span style="font-weight:600;color:@(Model.IsActive ? "#15803d" : "#dc2626");">@(Model.IsActive ? "Yes" : "No")</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--color-border);padding-bottom:10px;">
+                <span class="td-muted">Email Verified</span>
+                <span style="font-weight:600;color:@(Model.EmailVerified ? "#15803d" : "var(--color-text-muted)");">@(Model.EmailVerified ? "Yes" : "No")</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--color-border);padding-bottom:10px;">
+                <span class="td-muted">Identity Verified</span>
+                <span style="font-weight:600;color:@(Model.IdentityVerified ? "#15803d" : "var(--color-text-muted)");">@(Model.IdentityVerified ? "Yes" : "No")</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--color-border);padding-bottom:10px;">
+                <span class="td-muted">Joined</span>
+                <span style="font-weight:600;">@Model.CreatedAt.ToString("dd MMM yyyy")</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+                <span class="td-muted">Bookings</span>
+                <span style="font-weight:600;">@Model.Bookings?.Count()</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking History -->
+    <div class="table-card" style="padding:24px;">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:20px;color:var(--color-text-main);">Booking History</h3>
+        @if (Model.Bookings?.Any() == true)
+        {
+            <div style="display:flex;flex-direction:column;gap:12px;">
+                @foreach (var booking in Model.Bookings)
+                {
+                    <div style="border:1px solid var(--color-border);border-radius:var(--radius-sm);padding:14px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                            <span class="td-mono">@booking.BookingNumber</span>
+                            <span class="badge @(booking.Status == BookingStatus.Confirmed ? "badge-green" : booking.Status == BookingStatus.Pending ? "badge-yellow" : "badge-gray")">@booking.Status</span>
+                        </div>
+                        <div style="font-size:0.82rem;color:var(--color-text-muted);">
+                            @booking.CheckIn.ToString("dd MMM") - @booking.CheckOut.ToString("dd MMM yyyy")
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state" style="padding:40px 20px;">
+                <span class="material-symbols-outlined">event_busy</span>
+                <p>No bookings yet</p>
+            </div>
+        }
+    </div>
+</div>

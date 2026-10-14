@@ -1,0 +1,174 @@
+﻿@model eHoteloo.Models.ViewModels.RoomListViewModel
+@using eHoteloo.Models
+@{
+    ViewData["Title"] = "Home";
+    var roomTypes = Enum.GetValues(typeof(RoomType)).Cast<RoomType>();
+}
+
+<div class="container py-4">
+    <!-- Hero Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">Welcome to eHoteloo</h1>
+        <p class="lead text-muted">Find your perfect stay from our selection of premium rooms</p>
+    </div>
+
+    <!-- Filter & Sort Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" asp-action="Index" asp-controller="Home" class="row g-3 align-items-end">
+                <!-- Room Type Filter -->
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">Room Type</label>
+                    <select name="roomType" class="form-select">
+                        <option value="">All Types</option>
+                        @foreach (var rt in roomTypes)
+                        {
+                            <option value="@rt" selected="@(Model.Filter.RoomType == rt ? "selected" : null)">@rt</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Min Price -->
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">Min Price ($)</label>
+                    <input type="number" name="minPrice" class="form-control" placeholder="0"
+                           value="@(Model.Filter.MinPrice?.ToString() ?? "")" min="0" step="0.01" />
+                </div>
+
+                <!-- Max Price -->
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">Max Price ($)</label>
+                    <input type="number" name="maxPrice" class="form-control" placeholder="Max"
+                           value="@(Model.Filter.MaxPrice?.ToString() ?? "")" min="0" step="0.01" />
+                </div>
+
+                <!-- Capacity Filter -->
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">Capacity</label>
+                    <select name="capacity" class="form-select">
+                        <option value="">Any</option>
+                        <option value="1" selected="@(Model.Filter.Capacity == 1 ? "selected" : null)">1 Person</option>
+                        <option value="2" selected="@(Model.Filter.Capacity == 2 ? "selected" : null)">2 Persons</option>
+                        <option value="4" selected="@(Model.Filter.Capacity >= 3 ? "selected" : null)">3+ Persons (Suite)</option>
+                    </select>
+                </div>
+
+                <!-- Sort By -->
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">Sort By</label>
+                    <select name="sortBy" class="form-select">
+                        <option value="priceAsc" selected="@(Model.Filter.SortBy == "priceAsc" ? "selected" : null)">Price: Low to High</option>
+                        <option value="priceDesc" selected="@(Model.Filter.SortBy == "priceDesc" ? "selected" : null)">Price: High to Low</option>
+                        <option value="type" selected="@(Model.Filter.SortBy == "type" ? "selected" : null)">Room Type</option>
+                    </select>
+                </div>
+
+                <!-- Buttons -->
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-funnel-fill"></i> Apply
+                    </button>
+                    <a asp-action="Index" asp-controller="Home" class="btn btn-outline-secondary mt-2">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="text-muted mb-0">
+            <i class="bi bi-house-door"></i> Showing <strong>@Model.Rooms.Count</strong> available room@(Model.Rooms.Count != 1 ? "s" : "")
+        </p>
+    </div>
+
+    <!-- Rooms Grid -->
+    @if (Model.Rooms.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var room in Model.Rooms)
+            {
+                var firstImage = room.Images?.FirstOrDefault()?.ImagePath ?? "/images/rooms/default-room.jpg";
+                var capacity = room.RoomType switch
+                {
+                    RoomType.Single => 1,
+                    RoomType.Double => 2,
+                    RoomType.Suite => 4,
+                    _ => 1
+                };
+
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0 room-card">
+                        <div class="position-relative">
+                            <img src="@firstImage" class="card-img-top" alt="Room @room.RoomNumber"
+                                 style="height: 220px; object-fit: cover;" onerror="this.src='/images/rooms/default-room.jpg'" />
+                            <span class="badge bg-primary position-absolute top-0 end-0 m-2 px-3 py-2">
+                                @room.RoomType
+                            </span>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title fw-bold mb-0">Room @room.RoomNumber</h5>
+                                <span class="text-success fw-bold fs-5">$@room.PricePerDay<span class="fs-6 text-muted">/night</span></span>
+                            </div>
+
+                            <p class="card-text text-muted small flex-grow-1">
+                                @(string.IsNullOrEmpty(room.Description) ? "A comfortable room for your stay." : room.Description)
+                            </p>
+
+                            <div class="mb-3">
+                                <span class="badge bg-light text-dark border me-1">
+                                    <i class="bi bi-people-fill"></i> @capacity Person@(capacity > 1 ? "s" : "")
+                                </span>
+                                <span class="badge bg-light text-dark border">
+                                    <i class="bi bi-star-fill text-warning"></i> Available
+                                </span>
+                            </div>
+
+                            <a asp-action="Details" asp-controller="Home" asp-route-id="@room.Id"
+                               class="btn btn-outline-primary w-100 mt-auto">
+                                <i class="bi bi-eye"></i> View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <div class="mb-3">
+                <i class="bi bi-search display-1 text-muted"></i>
+            </div>
+            <h3 class="text-muted">No rooms found</h3>
+            <p class="text-muted">Try adjusting your filters to see more results.</p>
+            <a asp-action="Index" asp-controller="Home" class="btn btn-primary">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset Filters
+            </a>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .room-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+        }
+        .room-card .card-img-top {
+            transition: transform 0.3s ease;
+        }
+        .room-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+        .position-relative {
+            overflow: hidden;
+            border-radius: 0.375rem 0.375rem 0 0;
+        }
+    </style>
+}

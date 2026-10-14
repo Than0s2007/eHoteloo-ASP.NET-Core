@@ -1,0 +1,59 @@
+﻿@using eHoteloo.Models
+@model IEnumerable<eHoteloo.Models.Payment>
+@{
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "All Payments";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="page-header">
+    <h1>All Payments</h1>
+    <span class="page-date">@DateTime.Now.ToString("dd MMM yyyy")</span>
+</div>
+
+<div class="table-card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Booking #</th>
+                    <th>Guest</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Paid At</th>
+                    <th style="text-align:right;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var payment in Model)
+                {
+                    <tr>
+                        <td class="td-mono">#@payment.Id</td>
+                        <td>@payment.Booking?.BookingNumber</td>
+                        <td class="td-muted">@payment.Booking?.User?.Email</td>
+                        <td style="font-weight:700;color:#15803d;">$@payment.Amount</td>
+                        <td><span class="badge badge-gray">@payment.Method</span></td>
+                        <td>
+                            @{
+                                var badgeClass = payment.Status switch
+                                {
+                                    PaymentStatus.Success => "badge-green",
+                                    PaymentStatus.Pending => "badge-yellow",
+                                    PaymentStatus.Failed => "badge-red",
+                                    _ => "badge-gray"
+                                };
+                            }
+                            <span class="badge @badgeClass">@payment.Status</span>
+                        </td>
+                        <td class="td-muted">@payment.PaidAt.ToString("dd MMM yyyy HH:mm")</td>
+                        <td style="text-align:right;">
+                            <a asp-action="Details" asp-route-id="@payment.Id" style="color:var(--color-primary);font-weight:600;font-size:0.82rem;">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

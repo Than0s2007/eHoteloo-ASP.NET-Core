@@ -1,0 +1,108 @@
+﻿@using eHoteloo.Areas.User.ViewModels
+@model IEnumerable<UserServiceListViewModel>
+@{
+    ViewData["Title"] = "My Services";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3">My Service Requests</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (ViewBag.BookingNumber != null)
+    {
+        <div class="alert alert-info">
+            <strong>Active Booking:</strong> <span class="badge bg-secondary">@ViewBag.BookingNumber</span>
+            <span class="ms-2"><strong>Room:</strong> @ViewBag.RoomNumber</span>
+        </div>
+
+        <div class="mb-3">
+            <a asp-area="User" asp-controller="Services" asp-action="Create" class="btn btn-success">
+                <i class="bi bi-plus-lg"></i> Request New Service
+            </a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Service</th>
+                                <th>Request Date</th>
+                                <th>Status</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!Model.Any())
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">No services requested yet.</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                int counter = 1;
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td><strong>@item.Title</strong></td>
+                                        <td>@item.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                                        <td>
+                                            @switch (item.Status)
+                                            {
+                                                case ServiceStatus.Pending:
+                                                    <span class="badge bg-warning text-dark">Pending</span>
+                                                    break;
+                                                case ServiceStatus.InProgress:
+                                                    <span class="badge bg-info text-dark">In Progress</span>
+                                                    break;
+                                                case ServiceStatus.Completed:
+                                                    <span class="badge bg-success">Completed</span>
+                                                    break;
+                                                case ServiceStatus.Cancelled:
+                                                    <span class="badge bg-danger">Cancelled</span>
+                                                    break;
+                                            }
+                                        </td>
+                                        <td>@item.Price.ToString("C")</td>
+                                        <td>
+                                            <a asp-area="User" asp-controller="Services" asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
+                                                Details
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            @ViewBag.Message
+        </div>
+    }
+</div>

@@ -1,0 +1,60 @@
+﻿@using eHoteloo.Models
+@model eHoteloo.Models.Service
+@{
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Service Details";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="page-header">
+    <div style="display:flex;align-items:center;gap:12px;">
+        <a asp-action="Index" style="color:var(--color-text-muted);">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <h1>Service Details</h1>
+    </div>
+</div>
+
+<div style="max-width:600px;background:var(--color-white);border-radius:var(--radius);border:1px solid var(--color-border);padding:28px;">
+    <div style="margin-bottom:24px;">
+        <h2 style="font-size:1.25rem;font-weight:700;color:var(--color-text-main);">@Model.Title</h2>
+        <p style="color:var(--color-text-muted);margin-top:6px;line-height:1.5;">@(Model.Description ?? "No description available.")</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;font-size:0.9rem;">
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Booking</div>
+            <div style="font-weight:700;">@Model.Booking?.BookingNumber</div>
+        </div>
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Guest</div>
+            <div style="font-weight:600;">@Model.Booking?.User?.Email</div>
+        </div>
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Price</div>
+            <div style="font-weight:800;color:#15803d;font-size:1.1rem;">$@Model.Price</div>
+        </div>
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Status</div>
+            @{
+                var badgeClass = Model.Status switch
+                {
+                    ServiceStatus.Completed => "badge-green",
+                    ServiceStatus.InProgress => "badge-green",
+                    ServiceStatus.Pending => "badge-yellow",
+                    ServiceStatus.Cancelled => "badge-red",
+                    _ => "badge-gray"
+                };
+            }
+            <span class="badge @badgeClass">@Model.Status</span>
+        </div>
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Payment</div>
+            <div style="font-weight:600;">@(Model.PaymentId.HasValue ? $"#{Model.PaymentId}" : "None")</div>
+        </div>
+        <div>
+            <div class="td-muted" style="margin-bottom:4px;">Created</div>
+            <div style="font-weight:600;">@Model.CreatedAt.ToString("dd MMM yyyy")</div>
+        </div>
+    </div>
+</div>

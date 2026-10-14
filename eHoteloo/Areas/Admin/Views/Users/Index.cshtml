@@ -1,0 +1,87 @@
+﻿@model IEnumerable<eHoteloo.Areas.Admin.Models.AdminUserViewModel>
+@{
+    ViewData["Title"] = "Users Management";
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="page-header">
+    <h1>Users Management</h1>
+    <span class="page-date">@DateTime.Now.ToString("dd MMM yyyy")</span>
+</div>
+
+<div class="table-card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Balance</th>
+                    <th>Active</th>
+                    <th>Identity</th>
+                    <th>Email Confirmed</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td style="font-weight:600;">@user.FirstName @user.LastName</td>
+                        <td class="td-muted">@user.Email</td>
+                        <td class="td-muted">@(user.PhoneNumber ?? "-")</td>
+                        <td>
+                            <span class="badge @(user.Role == "Admin" ? "badge-green" : user.Role == "Staff" ? "badge-purple" : "badge-gray")">
+                                @user.Role
+                            </span>
+                        </td>
+                        <td style="font-weight:700;">$@user.Balance</td>
+                        <td>
+                            @if (user.IsActive)
+                            {
+                                <span class="material-symbols-outlined" style="color:#15803d;font-size:22px;">check_circle</span>
+                            }
+                            else
+                            {
+                                <span class="material-symbols-outlined" style="color:var(--color-text-light);font-size:22px;">cancel</span>
+                            }
+                        </td>
+                        <td>
+                            @if (user.IdentityVerified)
+                            {
+                                <span class="badge badge-green">Verified</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-gray">Pending</span>
+                            }
+                        </td>
+                        <td>
+                            @if (user.EmailConfirmed)
+                            {
+                                <span class="badge badge-green">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-yellow">No</span>
+                            }
+                        </td>
+                        <td style="text-align:right;">
+                            <div style="display:inline-flex;gap:8px;">
+                                <a asp-action="Edit" asp-route-id="@user.Id" title="Edit" style="color:#f59e0b;padding:6px;border-radius:6px;">
+                                    <span class="material-symbols-outlined" style="font-size:20px;">edit</span>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@user.Id" title="Details" style="color:var(--color-primary);padding:6px;border-radius:6px;">
+                                    <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

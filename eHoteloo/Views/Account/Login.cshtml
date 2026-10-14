@@ -1,0 +1,231 @@
+﻿@model eHoteloo.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - eHoteloo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f4f6fb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .brand-icon {
+            width: 56px;
+            height: 56px;
+            background: #eef2ff;
+            color: #3b6ff0;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+            .brand-icon .material-symbols-outlined {
+                font-size: 28px;
+            }
+
+        .brand h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1f36;
+        }
+
+        .brand p {
+            color: #6b7a99;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                font-size: 0.78rem;
+                font-weight: 600;
+                color: #6b7a99;
+                margin-bottom: 6px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 12px 16px;
+                border: 1px solid #e8ecf2;
+                border-radius: 10px;
+                font-family: inherit;
+                font-size: 0.95rem;
+                transition: all 0.2s;
+            }
+
+                .form-group input:focus {
+                    outline: none;
+                    border-color: #3b6ff0;
+                    box-shadow: 0 0 0 3px rgba(59,111,240,0.1);
+                }
+
+        .text-danger {
+            color: #dc2626;
+            font-size: 0.78rem;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+        }
+
+            .remember-forgot label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: #6b7a99;
+                cursor: pointer;
+            }
+
+            .remember-forgot input {
+                width: 16px;
+                height: 16px;
+                accent-color: #3b6ff0;
+            }
+
+            .remember-forgot a {
+                color: #3b6ff0;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: #3b6ff0;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .btn-primary:hover {
+                background: #2a52c9;
+            }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 24px 0;
+            color: #a0aec0;
+            font-size: 0.85rem;
+        }
+
+            .divider::before, .divider::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: #e8ecf2;
+            }
+
+        .register-link {
+            text-align: center;
+            color: #6b7a99;
+            font-size: 0.9rem;
+        }
+
+            .register-link a {
+                color: #3b6ff0;
+                font-weight: 600;
+                text-decoration: none;
+            }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="brand">
+            <div class="brand-icon">
+                <span class="material-symbols-outlined">hotel</span>
+            </div>
+            <h1>Welcome Back</h1>
+            <p>Sign in to your account</p>
+        </div>
+
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" style="margin-bottom:16px;"></div>
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" placeholder="john@example.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" placeholder="••••••••" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="remember-forgot">
+                <label>
+                    <input asp-for="RememberMe" />
+                    <span>Remember me</span>
+                </label>
+                <a asp-action="ForgotPassword">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn-primary">Sign In</button>
+        </form>
+
+        <div class="divider">or</div>
+
+        <div class="register-link">
+            Don't have an account? <a asp-action="Register">Create one</a>
+        </div>
+    </div>
+
+    <partial name="_ValidationScriptsPartial" />
+</body>
+</html>

@@ -1,0 +1,48 @@
+﻿@{
+    Layout = "/Views/Shared/_UserLayout.cshtml";
+    ViewData["Title"] = "Change Email";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model string
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-white py-4 border-bottom">
+                    <h4 class="mb-0 fw-bold"><i class="bi bi-envelope-at me-2"></i>Change Email</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-info d-flex align-items-center rounded-3" role="alert">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <div>After changing your email, you will need to verify it again.</div>
+                    </div>
+
+                    <form asp-action="ChangeEmail" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Current Email</label>
+                            <input type="email" class="form-control rounded-3" value="@Model" disabled />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">New Email</label>
+                            <input type="email" name="email" class="form-control form-control-lg rounded-3"
+                                   required placeholder="Enter new email address" />
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-3">
+                                <i class="bi bi-send me-2"></i>Send Confirmation
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary rounded-3">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

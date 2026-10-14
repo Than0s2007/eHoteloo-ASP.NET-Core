@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "/Views/Shared/_UserLayout.cshtml";
+    ViewData["Title"] = "Confirm Email Change";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card shadow-lg border-0 rounded-4 text-center">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center text-white shadow"
+                             style="width:100px;height:100px;font-size:48px;">
+                            <i class="bi bi-envelope-check"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-primary mb-3">Verifying...</h3>
+                    <p class="text-muted mb-4">
+                        Please wait while we confirm your new email address.
+                    </p>
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,238 @@
+﻿@model eHoteloo.Models.Room
+@using eHoteloo.Models
+@{
+    ViewData["Title"] = $"Room {Model.RoomNumber} - Details";
+    var images = Model.Images?.ToList() ?? new List<RoomImage>();
+    var firstImage = images.FirstOrDefault()?.ImagePath ?? "/images/rooms/default-room.jpg";
+    var capacity = Model.RoomType switch
+    {
+        RoomType.Single => 1,
+        RoomType.Double => 2,
+        RoomType.Suite => 4,
+        _ => 1
+    };
+}
+
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Rooms</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Room @Model.RoomNumber</li>
+        </ol>
+    </nav>
+
+    <!-- Alerts -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row g-4">
+        <!-- Image Gallery -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0">
+                <div class="position-relative">
+                    <img id="mainImage" src="@firstImage" class="card-img-top rounded"
+                         style="height: 450px; object-fit: cover;" alt="Room @Model.RoomNumber"
+                         onerror="this.src='/images/rooms/default-room.jpg'" />
+                </div>
+                @if (images.Count > 1)
+                {
+                    <div class="card-footer bg-white d-flex gap-2 overflow-auto py-3">
+                        @foreach (var img in images)
+                        {
+                            <img src="@img.ImagePath" class="thumbnail-img rounded cursor-pointer"
+                                 style="width: 80px; height: 60px; object-fit: cover; cursor: pointer;"
+                                 onclick="document.getElementById('mainImage').src='@img.ImagePath'"
+                                 onerror="this.style.display='none'" />
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Room Info & Booking -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h2 class="fw-bold mb-1">Room @Model.RoomNumber</h2>
+                            <span class="badge bg-primary fs-6 px-3 py-2">@Model.RoomType</span>
+                        </div>
+                        <div class="text-end">
+                            <span class="display-6 fw-bold text-success">$@Model.PricePerDay</span>
+                            <p class="text-muted mb-0">per night</p>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <!-- Features -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3">
+                                    <i class="bi bi-people-fill fs-4"></i>
+                                </div>
+                                <div>
+                                    <p class="mb-0 text-muted small">Capacity</p>
+                                    <p class="mb-0 fw-semibold">@capacity Person@(capacity > 1 ? "s" : "")</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box bg-success bg-opacity-10 text-success rounded-circle p-2 me-3">
+                                    <i class="bi bi-check-circle-fill fs-4"></i>
+                                </div>
+                                <div>
+                                    <p class="mb-0 text-muted small">Status</p>
+                                    <p class="mb-0 fw-semibold">Available</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box bg-info bg-opacity-10 text-info rounded-circle p-2 me-3">
+                                    <i class="bi bi-calendar-check fs-4"></i>
+                                </div>
+                                <div>
+                                    <p class="mb-0 text-muted small">Created</p>
+                                    <p class="mb-0 fw-semibold">@Model.CreatedAt.ToString("MMM yyyy")</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box bg-warning bg-opacity-10 text-warning rounded-circle p-2 me-3">
+                                    <i class="bi bi-hash fs-4"></i>
+                                </div>
+                                <div>
+                                    <p class="mb-0 text-muted small">Room No</p>
+                                    <p class="mb-0 fw-semibold">@Model.RoomNumber</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <!-- Description -->
+                    <h5 class="fw-bold mb-3">Description</h5>
+                    <p class="text-muted">
+                        @(string.IsNullOrEmpty(Model.Description)
+                                                ? "Experience comfort and luxury in this beautifully appointed room. Perfect for both business and leisure travelers, featuring modern amenities and a relaxing atmosphere."
+                                                : Model.Description)
+                    </p>
+
+                    <hr />
+
+                    <!-- Book Now Form -->
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <h5 class="fw-bold mb-3"><i class="bi bi-calendar-plus"></i> Book This Room</h5>
+                        <form asp-action="BookNow" asp-controller="Home" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="roomId" value="@Model.Id" />
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Check-In Date</label>
+                                    <input type="date" name="checkIn" class="form-control" required
+                                           min="@DateTime.UtcNow.ToString("yyyy-MM-dd")"
+                                           onchange="calculateTotal()" id="checkInDate" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Check-Out Date</label>
+                                    <input type="date" name="checkOut" class="form-control" required
+                                           min="@DateTime.UtcNow.AddDays(1).ToString("yyyy-MM-dd")"
+                                           onchange="calculateTotal()" id="checkOutDate" />
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info mt-3 mb-3" id="priceSummary" style="display: none;">
+                                <div class="d-flex justify-content-between">
+                                    <span><i class="bi bi-moon-stars"></i> <span id="nightsCount">0</span> night(s)</span>
+                                    <span class="fw-bold">Total: $<span id="totalPrice">0.00</span></span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100 mt-2">
+                                <i class="bi bi-calendar-check-fill"></i> Book Now
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning d-flex align-items-center" role="alert">
+                            <i class="bi bi-lock-fill me-2"></i>
+                            <div>
+                                Please <a asp-action="Login" asp-controller="Account" class="alert-link">log in</a>
+                                or <a asp-action="Register" asp-controller="Account" class="alert-link">register</a>
+                                to book this room.
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function calculateTotal() {
+            const checkIn = new Date(document.getElementById('checkInDate').value);
+            const checkOut = new Date(document.getElementById('checkOutDate').value);
+            const pricePerDay = @Model.PricePerDay;
+            const summary = document.getElementById('priceSummary');
+
+            if (checkIn && checkOut && checkOut > checkIn) {
+                const diffTime = Math.abs(checkOut - checkIn);
+                const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                const total = nights * pricePerDay;
+
+                document.getElementById('nightsCount').textContent = nights;
+                document.getElementById('totalPrice').textContent = total.toFixed(2);
+                summary.style.display = 'block';
+            } else {
+                summary.style.display = 'none';
+            }
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .thumbnail-img {
+            transition: opacity 0.2s, transform 0.2s;
+            border: 2px solid transparent;
+        }
+
+            .thumbnail-img:hover {
+                opacity: 0.8;
+                transform: scale(1.05);
+                border-color: #0d6efd;
+            }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+}

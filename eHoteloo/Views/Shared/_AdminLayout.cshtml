@@ -1,0 +1,125 @@
+﻿@{
+    Layout = null;
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — eHoteloo Admin</title>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/Admin_Style.css" asp-append-version="true" />
+</head>
+<body>
+    <div id="main-wrapper" data-layout="vertical" data-sidebartype="full">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="material-symbols-outlined">hotel</span>
+                <span class="brand-name">eHoteloo</span>
+            </div>
+            <nav>
+                <span class="nav-section-title">Main Menu</span>
+
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index"
+                   class="nav-link @(currentController == "Dashboard" ? "active" : "")">
+                    <span class="material-symbols-outlined">grid_view</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a asp-area="Admin" asp-controller="Rooms" asp-action="Index"
+                   class="nav-link @(currentController == "Rooms" ? "active" : "")">
+                    <span class="material-symbols-outlined">bed</span>
+                    <span>Rooms</span>
+                </a>
+
+                <a asp-area="Admin" asp-controller="Bookings" asp-action="Index"
+                   class="nav-link @(currentController == "Bookings" ? "active" : "")">
+                    <span class="material-symbols-outlined">book_online</span>
+                    <span>Bookings</span>
+                </a>
+
+                <a asp-area="Admin" asp-controller="Payments" asp-action="Index"
+                   class="nav-link @(currentController == "Payments" ? "active" : "")">
+                    <span class="material-symbols-outlined">payments</span>
+                    <span>Payments</span>
+                </a>
+
+                <a asp-area="Admin" asp-controller="Services" asp-action="Index"
+                   class="nav-link @(currentController == "Services" ? "active" : "")">
+                    <span class="material-symbols-outlined">room_service</span>
+                    <span>Services</span>
+                </a>
+
+                <span class="nav-section-title" style="margin-top:8px;">Management</span>
+
+                <a asp-area="Admin" asp-controller="Users" asp-action="Index"
+                   class="nav-link @(currentController == "Users" ? "active" : "")">
+                    <span class="material-symbols-outlined">group</span>
+                    <span>Users</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Page Wrapper -->
+        <div class="page-wrapper">
+
+            <!-- Topbar -->
+            <header class="topbar">
+                <button class="toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <span class="title">Hotel Management</span>
+                <div class="topbar-right">
+                    <!-- NEW: Home button -->
+                    <a asp-controller="Home" asp-action="Index" asp-area="" class="topbar-icon-btn" title="الصفحة الرئيسية">
+                        <span class="material-symbols-outlined">home</span>
+                    </a>
+                    <button class="topbar-icon-btn" title="Notifications">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                    <div class="topbar-avatar" title="Admin">A</div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <main class="content">
+                @RenderBody()
+            </main>
+
+            @RenderSection("Scripts", required: false)
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const wrapper = document.getElementById("main-wrapper");
+            const isMini = wrapper.getAttribute("data-sidebartype") === "mini-sidebar";
+            if (isMini) {
+                wrapper.setAttribute("data-sidebartype", "full");
+                wrapper.classList.remove("show-sidebar");
+            } else {
+                // Mobile: toggle overlay
+                if (window.innerWidth <= 768) {
+                    wrapper.classList.toggle("show-sidebar");
+                } else {
+                    wrapper.setAttribute("data-sidebartype", "mini-sidebar");
+                }
+            }
+        }
+
+        // Close sidebar on mobile overlay click
+        document.getElementById("main-wrapper").addEventListener("click", function (e) {
+            if (window.innerWidth <= 768 && e.target === this) {
+                this.classList.remove("show-sidebar");
+            }
+        });
+    </script>
+</body>
+</html>
